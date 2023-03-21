@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Profiles</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Profiles</h1>
+      {% for user in users %}
+        <div class="card">
+          {% if user.picture %}
+            <img src="{{ user.picture }}" class="card-img-top" alt="{{ user.name }}">
+          {% endif %}
+          <div class="card-body">
+            <h5 class="card-title">{{ user.name }}</h5>
+            <p class="card-text">{{ user.bio }}</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for
 from werkzeug.utils import secure_filename
 import os
 
@@ -23,9 +23,19 @@ def index():
         c = db.cursor()
         c.execute("INSERT INTO users (name, bio, picture) VALUES (?, ?, ?)", (name, bio, picture))
         db.commit()
+        return redirect(url_for('profiles'))
     return render_template('index.html')
+        
+@app.route('/profiles')
+def profiles():
+    db = get_db()
+    c = db.cursor()
+    c.execute("SELECT * FROM users")
+    users = c.fetchall()
+    return render_template('profiles.html', users=users)
         
 if __name__ == '__main__':
     init_db()
     app.run(debug=True)
+
 
