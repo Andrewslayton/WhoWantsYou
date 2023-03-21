@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template, redirect, url_for
 from werkzeug.utils import secure_filename
-import os
+from flask_login import LoginManager, current_user, login_required
+import os 
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/images'
@@ -25,6 +26,7 @@ def index():
         db.commit()
         return redirect(url_for('profiles'))
     return render_template('index.html')
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -47,9 +49,11 @@ def register():
         return redirect('/login')
     return render_template('register.html')
 
+@app.route('/login')
+def login():
+    return render_template('login.html')
         
 @app.route('/profiles')
-
 def profiles():
     db = get_db()
     c = db.cursor()
