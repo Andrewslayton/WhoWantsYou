@@ -25,8 +25,31 @@ def index():
         db.commit()
         return redirect(url_for('profiles'))
     return render_template('index.html')
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+        if not username or not password or not confirm_password:
+            error = 'Please fill out all required fields.'
+            return render_template('register.html', error=error)
+        if password != confirm_password:
+            error = 'Passwords do not match.'
+            return render_template('register.html', error=error)
+        db = get_db()
+        user = db.execute('SELECT * FROM users WHERE username = ?', (username,)).fetchone()
+        if user is not None:
+            error = 'Username already taken.'
+            return render_template('register.html', error=error)
+        db.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, password))
+        db.commit()
+        return redirect('/login')
+    return render_template('register.html')
+
         
 @app.route('/profiles')
+
 def profiles():
     db = get_db()
     c = db.cursor()
