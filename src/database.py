@@ -10,8 +10,4 @@ def get_db():
         db.row_factory = sqlite3.Row
     return db
 
-def init_db():
-    with open('schema.sql') as f:
-        db = get_db()
-        db.executescript(f.read())
-        db.commit()
+

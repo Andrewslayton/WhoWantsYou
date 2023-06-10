@@ -5,13 +5,12 @@
   </head>
   <body>
     <h1>Login</h1>
-    <form method="post">
-      <label>Username:</label>
-      <input type="text" name="username"><br><br>
-      <label>Password:</label>
-      <input type="password" name="password"><br><br>
-      <input type="submit" value="Login">
-    </form>
+    <form method="POST" action="">
+      {{ form.hidden_tag() }}
+      {{ form.username }}
+      {{ form.password }}
+      {{ form.submit }}
+  </form>
     <a href="/register"><button>Dont have an account? Register here!</button></a>
   </body>
 </html>

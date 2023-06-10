@@ -24,21 +24,12 @@
       {% endif %}
     {% endwith %}
     
-    <form action="{{ url_for('register') }}" method="POST">
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" class="form-control" id="username" name="username" required>
-        </div>
-        <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" class="form-control" id="password" name="password" required>
-        </div>
-        <div class="form-group">
-            <label for="confirm_password">Confirm Password:</label>
-            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Register</button>
-    </form>
+    <form method="POST" action="">
+      {{ form.hidden_tag() }}
+      {{ form.username }}
+      {{ form.password }}
+      {{ form.submit }}
+  </form>
 </div>
   <a href="/login"><button>ALready have an account? Login here!</button></a>
 </body>
