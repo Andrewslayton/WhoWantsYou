@@ -45,7 +45,13 @@ class User(db.Model, UserMixin):
     @staticmethod
     def check_password(user_password, hashed_password):
         return check_password_hash(hashed_password, user_password)
-
+profile = db.relationship('Profile', backref='user', uselist=False)
+class Profiles(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    name = db.Column(db.String(100))
+    bio = db.Column(db.String(500))
+    picture = db.Column(db.String(100))
 class RegisterForm(FlaskForm):
     username = StringField(validators=[
                            InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
@@ -69,7 +75,10 @@ class LoginForm(FlaskForm):
 
     submit = SubmitField('Login')
 
+
+#error using profile table, could be the label ID currently needs to be fixed
 @app.route('/createprofile', methods=['GET', 'POST'])
+@login_required
 def index():
     if request.method == 'POST':
         name = request.form['name']
@@ -81,8 +90,8 @@ def index():
             picture = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         else:
             picture = None
-        user = User(name=name, bio=bio, picture=picture)
-        db.session.add(user)
+        profile = Profiles(name=name, bio=bio, picture=picture)
+        db.session.add(profile)
         db.session.commit()
         return redirect(url_for('profiles'))
     return render_template('index.html')
