@@ -3,22 +3,40 @@
   <head>
     <title>Profiles</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+      body {
+        background: #f2f2f2;
+      }
+      .card {
+        margin-bottom: 20px;
+      }
+      .card-img-top {
+        width: 300px;
+        height: auto;
+        object-fit: cover;
+      }
+    </style>
   </head>
   <body>
-    <div class="container">
-      <h1>Profiles</h1>
-      {% for profile in profiles %}
-        <div class="card">
-          {% if profile.picture %}
-            <img src="{{ url_for('static', filename=profile.picture) }}" class="card-img-top" alt="{{ profile.name }}">
-          {% endif %}
-          <div class="card-body">
-            <h5 class="card-title">{{ profile.name }}</h5>
-            <p class="card-text">{{ profile.bio }}</p>
+    <div class="container my-5">
+      <h1 class="mb-4">Profiles</h1>
+      <div class="row">
+        {% for profile in profiles %}
+          <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card">
+              {% if profile.picture %}
+                <img src="{{profile.picture}}" class="card-img-top mx-auto d-block" alt="{{ profile.name }}">
+              {% endif %}
+              <div class="card-body">
+                <h5 class="card-title">{{ profile.name }}</h5>
+                <p class="card-text">{{ profile.bio }}</p>
+              </div>
+            </div>
           </div>
-        </div>
-      {% endfor %}
+        {% endfor %}
+      </div>
     </div>
   </body>
 </html>
+
 
