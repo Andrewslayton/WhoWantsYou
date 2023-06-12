@@ -90,7 +90,7 @@ def index():
             picture = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         else:
             picture = None
-        profile = Profiles(name=name, bio=bio, picture=picture)
+        profile = Profiles(user_id=current_user.id ,name=name, bio=bio, picture=picture)
         db.session.add(profile)
         db.session.commit()
         return redirect(url_for('profiles'))
