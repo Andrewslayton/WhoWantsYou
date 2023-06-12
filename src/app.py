@@ -80,6 +80,11 @@ class LoginForm(FlaskForm):
 @app.route('/createprofile', methods=['GET', 'POST'])
 @login_required
 def index():
+    #checks for existing profile and if and only if exists then sends the user to the profiles page
+    profile_exists = Profiles.query.filter_by(user_id=current_user.id).first()
+    if profile_exists:
+        return redirect(url_for('profiles'))
+    #takes the data requested from the create profile form and saves it to the SQL table of "profiles" Uses the current USER id to link the User to their profile
     if request.method == 'POST':
         name = request.form['name']
         bio = request.form['bio']
@@ -122,8 +127,9 @@ def login():
 
 @app.route('/profiles')
 def profiles():
-    users = User.query.all()
-    return render_template('profiles.html', users=users)
+    profiles = Profiles.query.all()
+    return render_template('profiles.html', profiles=profiles)
+
 
 @app.route('/logout')
 @login_required
@@ -135,7 +141,7 @@ def logout():
 def initdb_command():
     """Creates the database tables."""
     db.create_all()
-    print('Initialized the database.')
+    print('databases initialized')
 
 
 if __name__ == '__main__':
