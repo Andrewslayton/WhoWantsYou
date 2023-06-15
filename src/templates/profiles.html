@@ -16,13 +16,14 @@
         object-fit: cover;
       }
     </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   </head>
   <body>
     <div class="container my-5">
       <h1 class="mb-4">Profiles</h1>
       <div class="row">
         {% for profile in profiles %}
-          <div class="col-lg-4 col-md-6 mb-4">
+          <div class="col-lg-4 col-md-6 mb-4 profile-card" id="profile-{{profile.id}}">
             <div class="card">
               {% if profile.picture %}
                 <img src="{{profile.picture}}" class="card-img-top mx-auto d-block" alt="{{ profile.name }}">
@@ -30,16 +31,24 @@
               <div class="card-body">
                 <h5 class="card-title">{{ profile.name }}</h5>
                 <p class="card-text">{{ profile.bio }}</p>
-                <form method="POST" action="#">
+                <form method="POST" action="/match/{{profile.id}}">
                   <button type="submit" class="btn btn-primary">Match</button>
-                </form>
+              </form>              
               </div>
             </div>
           </div>
         {% endfor %}
       </div>
     </div>
+
+    <script>
+      function hideProfile(profileId) {
+        $('#profile-' + profileId).hide();
+      }
+    </script>
+
   </body>
 </html>
+
 
 

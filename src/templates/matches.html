@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Matches</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Matches</h1>
+      <div class="row">
+        {% for profile in matched_profiles %}
+          <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+              {% if profile.picture %}
+                <img src="{{ profile.picture }}" class="card-img-top" alt="{{ profile.name }}">
+              {% endif %}
+              <div class="card-body">
+                <h5 class="card-title">{{ profile.name }}</h5>
+                <p class="card-text">{{ profile.bio }}</p>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </body>
+</html>
+
+
+
+
