@@ -14,7 +14,7 @@ from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 from datetime import datetime
-from sqlalchemy import or_
+from sqlalchemy import and_, or_
 
 app = Flask(__name__)
 
@@ -142,8 +142,13 @@ def match(profile_id):
     profile = Profiles.query.get(profile_id)
     if not profile:
         return {"error": "Profile not found"}, 404
-    existing_match = Matches.query.filter(or_((Matches.user_id_1==current_user.id, Matches.user_id_2==profile.user_id), 
-                                              (Matches.user_id_1==profile.user_id, Matches.user_id_2==current_user.id))).first()
+    existing_match = Matches.query.filter(
+        or_(
+            and_(Matches.user_id_1 == current_user.id, Matches.user_id_2 == profile.user_id),
+            and_(Matches.user_id_1 == profile.user_id, Matches.user_id_2 == current_user.id)
+        )
+    ).first()
+
     if existing_match:
         existing_match.status = True
     else:
