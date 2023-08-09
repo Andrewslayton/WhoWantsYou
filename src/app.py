@@ -108,7 +108,7 @@ def index():
         return redirect(url_for('profiles'))
     return render_template('index.html')
 
-@ app.route('/register', methods=['GET', 'POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
@@ -117,18 +117,25 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         return redirect(url_for('login'))
+    else:
+        if form.is_submitted():  # Checks if the form was submitted
+            flash("Account not created. Try another username!")
     return render_template('register.html', form=form)
+
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
-        if user:
-            if bcrypt.check_password_hash(user.password, form.password.data):
-                login_user(user)
-                return redirect(url_for('index'))
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user)
+            return redirect(url_for('index'))
+        else:
+            if form.is_submitted():
+                flash("Incorrect username or password", "danger")
     return render_template('login.html', form=form)
+
 
 @app.route('/profiles')
 def profiles():

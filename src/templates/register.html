@@ -1,26 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Registration Page</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-          crossorigin="anonymous">
-</head>
-<body>
-    
-<div class="container">
-    <h2>Registration Form</h2>
-    
-    {% with messages = get_flashed_messages() %}
+<!doctype html>
+<html>
+  <head>
+    <title>Register</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='stylesheet.css') }}">
+  </head>
+  <body>
+    <h1>Register for WHO WANTS YOU</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
-        <div class="alert alert-danger">
-          <ul>
-            {% for message in messages %}
-              <li>{{ message }}</li>
-            {% endfor %}
-          </ul>
-        </div>
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
       {% endif %}
     {% endwith %}
     
@@ -29,8 +21,9 @@
       {{ form.username }}
       {{ form.password }}
       {{ form.submit }}
-  </form>
-</div>
-  <a href="/"><button>ALready have an account? Login here!</button></a>
-</body>
+    </form>
+    
+    <a href="/"><button>Already have an account? Login here!</button></a>
+  </body>
 </html>
+
