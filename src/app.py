@@ -138,9 +138,16 @@ def login():
 
 
 @app.route('/profiles')
+@login_required
 def profiles():
     matched_user_ids = [match.user_id_2 for match in Matches.query.filter_by(user_id_1=current_user.id).all()]
-    profiles = Profiles.query.filter(~Profiles.user_id.in_(matched_user_ids)).all()
+    
+    # Exclude the current user and already matched profiles
+    profiles = Profiles.query.filter(
+        ~Profiles.user_id.in_(matched_user_ids),
+        Profiles.user_id != current_user.id  # Exclude the current user's profile
+    ).all()
+
     return render_template('profiles.html', profiles=profiles)
 
 @app.route('/match/<profile_id>', methods=['POST'])
@@ -149,36 +156,50 @@ def match(profile_id):
     profile = Profiles.query.get(profile_id)
     if not profile:
         return {"error": "Profile not found"}, 404
+
+    # Check if the other user has already expressed interest
     existing_match = Matches.query.filter(
-        or_(
-            and_(Matches.user_id_1 == current_user.id, Matches.user_id_2 == profile.user_id),
-            and_(Matches.user_id_1 == profile.user_id, Matches.user_id_2 == current_user.id)
-        )
+        and_(Matches.user_id_1 == profile.user_id, Matches.user_id_2 == current_user.id)
     ).first()
 
     if existing_match:
+        # The other user has expressed interest. Confirm the match.
         existing_match.status = True
     else:
-        match = Matches(user_id_1=current_user.id, user_id_2=profile.user_id, status=True)
-        db.session.add(match)
+        # The other user hasn't expressed interest. Record the current user's interest.
+        new_match = Matches(user_id_1=current_user.id, user_id_2=profile.user_id, status=False)
+        db.session.add(new_match)
+
     db.session.commit()
     return redirect(url_for('profiles'))
+
 
 @app.route('/matches', methods=['GET'])
 @login_required
 def matches():
     user_id = current_user.id
-    match_records = Matches.query.filter((Matches.user_id_1 == user_id) | (Matches.user_id_2 == user_id), Matches.status == True).all()
+
+    # Retrieve only confirmed matches
+    match_records = Matches.query.filter(
+        ((Matches.user_id_1 == user_id) | (Matches.user_id_2 == user_id)), 
+        Matches.status == True
+    ).all()
+
     matched_profiles = []
     for record in match_records:
+        # Determine the ID of the other user in the match
         if record.user_id_1 == user_id:
             matched_user_id = record.user_id_2
         else:
             matched_user_id = record.user_id_1
+
+        # Fetch the profile of the matched user and add to the list
         matched_profile = Profiles.query.filter_by(user_id=matched_user_id).first()
         if matched_profile:
             matched_profiles.append(matched_profile)
+
     return render_template('matches.html', matched_profiles=matched_profiles)
+
 
 @app.route('/logout')
 @login_required
