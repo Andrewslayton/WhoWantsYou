@@ -137,18 +137,34 @@ def login():
     return render_template('login.html', form=form)
 
 
+    matched_user_ids = [match.user_id_2 for match in Matches.query.filter_by(user_id_1=current_user.id).all()]
 @app.route('/profiles')
 @login_required
 def profiles():
+    # Get all pairs where both sides have matched
+    confirmed_matches = Matches.query.filter_by(status=True).all()
     matched_user_ids = [match.user_id_2 for match in Matches.query.filter_by(user_id_1=current_user.id).all()]
-    
-    # Exclude the current user and already matched profiles
+    confirmed_partner_ids = []
+    for match in matched_user_ids:
+        confirmed_partner_ids.append(match)
+    # Filter the pairs where the current user is involved
+    for match in confirmed_matches:
+        if match.user_id_1 == current_user.id:
+            confirmed_partner_ids.append(match.user_id_2)
+        elif match.user_id_2 == current_user.id:
+            confirmed_partner_ids.append(match.user_id_1)
+
+    # Fetch all profiles, excluding:
+    # 1. The current user's profile
+    # 2. Users that have a confirmed mutual match with the current user
     profiles = Profiles.query.filter(
-        ~Profiles.user_id.in_(matched_user_ids),
-        Profiles.user_id != current_user.id  # Exclude the current user's profile
+        ~Profiles.user_id.in_(confirmed_partner_ids),
+        Profiles.user_id != current_user.id
     ).all()
 
     return render_template('profiles.html', profiles=profiles)
+
+
 
 @app.route('/match/<profile_id>', methods=['POST'])
 @login_required

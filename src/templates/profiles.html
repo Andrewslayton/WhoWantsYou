@@ -31,9 +31,9 @@
               <div class="card-body">
                 <h5 class="card-title">{{ profile.name }}</h5>
                 <p class="card-text">{{ profile.bio }}</p>
-                <form method="POST" action="/match/{{profile.id}}">
+                <form method="POST" action="/match/{{profile.id}}" class="match-form">
                   <button type="submit" class="btn btn-primary">Match</button>
-              </form>              
+                </form>              
               </div>
             </div>
           </div>
@@ -42,13 +42,24 @@
     </div>
 
     <script>
-      function hideProfile(profileId) {
-        $('#profile-' + profileId).hide();
-      }
+      $(document).ready(function() {
+        $(".match-form").submit(function(event) {
+          event.preventDefault();  // prevent the form from doing a page refresh
+          
+          const form = $(this);
+          const profileCard = form.closest('.profile-card');
+
+          $.post(form.attr('action'), function(data) {
+            // Assuming the AJAX POST is always successful, hide the profile card
+            profileCard.hide();
+          });
+        });
+      });
     </script>
 
   </body>
 </html>
+
 
 
 
