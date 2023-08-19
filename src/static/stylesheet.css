@@ -153,3 +153,43 @@ a {
         opacity: 1;
     }
 }
+
+.image-upload-container {
+    margin-top: 20px;
+}
+
+.image-upload-box {
+    position: relative;
+    width: 32%;  /* So there's a little space between boxes */
+    border: 1px solid #ddd;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.image-input {
+    display: none;
+}
+
+.upload-placeholder {
+    height: 150px;
+    background-color: #f6f6f6;
+    border: 2px dashed #ddd;
+}
+
+.plus-sign {
+    font-size: 48px;
+    color: #aaa;
+}
+
+.image-preview, .zoom-icon {
+    display: none;
+    max-width: 100%;
+    margin-top: 10px;
+}
+
+.zoom-icon {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    cursor: pointer;
+}

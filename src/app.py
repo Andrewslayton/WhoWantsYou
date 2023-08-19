@@ -55,7 +55,13 @@ class Profiles(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     name = db.Column(db.String(100))
     bio = db.Column(db.String(500))
-    picture = db.Column(db.String(100))
+    images = db.relationship('ProfileImages', backref='profile', lazy=True)
+
+class ProfileImages(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id'), nullable=False)
+    image_path = db.Column(db.String(255))
+
 
 class Matches(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -89,24 +95,41 @@ class LoginForm(FlaskForm):
 @app.route('/createprofile', methods=['GET', 'POST'])
 @login_required
 def index():
+
     profile_exists = Profiles.query.filter_by(user_id=current_user.id).first()
     if profile_exists:
-        return redirect(url_for('profiles'))
+        return redirect(url_for('profiles'))  
     if request.method == 'POST':
         name = request.form['name']
         bio = request.form['bio']
-        file = request.files['picture']
-        if file:
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            picture = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        else:
-            picture = None
-        profile = Profiles(user_id=current_user.id ,name=name, bio=bio, picture=picture)
-        db.session.add(profile)
-        db.session.commit()
+        files = request.files.getlist('picture')  
+        try:
+            profile = Profiles(user_id=current_user.id, name=name, bio=bio)
+            db.session.add(profile)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            return render_template('index.html', error="Error creating profile. Please try again.")           
+        try:
+            for file in files:
+                if file:
+                    filename = secure_filename(file.filename)
+                    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    file.save(file_path)
+                        
+                    image = ProfileImages(profile_id=profile.id, image_path=file_path)
+                    db.session.add(image)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            return render_template('index.html', error="Error uploading images. Please try again.")
         return redirect(url_for('profiles'))
     return render_template('index.html')
+
+
+
+
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -141,25 +164,25 @@ def login():
 @app.route('/profiles')
 @login_required
 def profiles():
-    #comment
+    # comment
     confirmed_matches = Matches.query.filter_by(status=True).all()
     matched_user_ids = [match.user_id_2 for match in Matches.query.filter_by(user_id_1=current_user.id).all()]
-    confirmed_partner_ids = []
-    for match in matched_user_ids:
-        confirmed_partner_ids.append(match) 
-    #comment
+    confirmed_partner_ids = matched_user_ids.copy()  # Initialize with matched_user_ids
+    # comment
     for match in confirmed_matches:
         if match.user_id_1 == current_user.id:
             confirmed_partner_ids.append(match.user_id_2)
         elif match.user_id_2 == current_user.id:
             confirmed_partner_ids.append(match.user_id_1)
-    #comment
+    # comment
     profiles = Profiles.query.filter(
         ~Profiles.user_id.in_(confirmed_partner_ids),
         Profiles.user_id != current_user.id
     ).all()
-
-    return render_template('profiles.html', profiles=profiles)
+    images = {profile.id: [img.image_path for img in profile.images] for profile in profiles}
+    for image in images:
+        print(image)
+    return render_template('profiles.html', profiles=profiles, images=images)
 
 
 
@@ -169,12 +192,10 @@ def match(profile_id):
     profile = Profiles.query.get(profile_id)
     if not profile:
         return {"error": "Profile not found"}, 404
-
     #comment
     existing_match = Matches.query.filter(
         and_(Matches.user_id_1 == profile.user_id, Matches.user_id_2 == current_user.id)
     ).first()
-
     if existing_match:
         # comment
         existing_match.status = True
@@ -182,7 +203,6 @@ def match(profile_id):
         # comment
         new_match = Matches(user_id_1=current_user.id, user_id_2=profile.user_id, status=False)
         db.session.add(new_match)
-
     db.session.commit()
     return redirect(url_for('profiles'))
 
@@ -191,13 +211,11 @@ def match(profile_id):
 @login_required
 def matches():
     user_id = current_user.id
-
     # comment
     match_records = Matches.query.filter(
         ((Matches.user_id_1 == user_id) | (Matches.user_id_2 == user_id)), 
         Matches.status == True
     ).all()
-
     matched_profiles = []
     for record in match_records:
         # comment
@@ -205,12 +223,10 @@ def matches():
             matched_user_id = record.user_id_2
         else:
             matched_user_id = record.user_id_1
-
         # Fcomment
         matched_profile = Profiles.query.filter_by(user_id=matched_user_id).first()
         if matched_profile:
             matched_profiles.append(matched_profile)
-
     return render_template('matches.html', matched_profiles=matched_profiles)
 
 
@@ -220,18 +236,13 @@ def delete_account():
     # comment
     Matches.query.filter_by(user_id_1=current_user.id).delete()
     Matches.query.filter_by(user_id_2=current_user.id).delete()
-
     # comment
     Profiles.query.filter_by(user_id=current_user.id).delete()
-
     # comment
     User.query.filter_by(id=current_user.id).delete()
-
     db.session.commit()
-
     # comment
     logout_user()
-    
     flash('Your account has been deleted.')
     return redirect(url_for('index'))
 
@@ -253,5 +264,3 @@ if __name__ == '__main__':
     with app.app_context():
         db
     app.run(debug=True)
-
-
