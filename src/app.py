@@ -141,22 +141,19 @@ def login():
 @app.route('/profiles')
 @login_required
 def profiles():
-    # Get all pairs where both sides have matched
+    #comment
     confirmed_matches = Matches.query.filter_by(status=True).all()
     matched_user_ids = [match.user_id_2 for match in Matches.query.filter_by(user_id_1=current_user.id).all()]
     confirmed_partner_ids = []
     for match in matched_user_ids:
-        confirmed_partner_ids.append(match)
-    # Filter the pairs where the current user is involved
+        confirmed_partner_ids.append(match) 
+    #comment
     for match in confirmed_matches:
         if match.user_id_1 == current_user.id:
             confirmed_partner_ids.append(match.user_id_2)
         elif match.user_id_2 == current_user.id:
             confirmed_partner_ids.append(match.user_id_1)
-
-    # Fetch all profiles, excluding:
-    # 1. The current user's profile
-    # 2. Users that have a confirmed mutual match with the current user
+    #comment
     profiles = Profiles.query.filter(
         ~Profiles.user_id.in_(confirmed_partner_ids),
         Profiles.user_id != current_user.id
@@ -173,16 +170,16 @@ def match(profile_id):
     if not profile:
         return {"error": "Profile not found"}, 404
 
-    # Check if the other user has already expressed interest
+    #comment
     existing_match = Matches.query.filter(
         and_(Matches.user_id_1 == profile.user_id, Matches.user_id_2 == current_user.id)
     ).first()
 
     if existing_match:
-        # The other user has expressed interest. Confirm the match.
+        # comment
         existing_match.status = True
     else:
-        # The other user hasn't expressed interest. Record the current user's interest.
+        # comment
         new_match = Matches(user_id_1=current_user.id, user_id_2=profile.user_id, status=False)
         db.session.add(new_match)
 
@@ -195,7 +192,7 @@ def match(profile_id):
 def matches():
     user_id = current_user.id
 
-    # Retrieve only confirmed matches
+    # comment
     match_records = Matches.query.filter(
         ((Matches.user_id_1 == user_id) | (Matches.user_id_2 == user_id)), 
         Matches.status == True
@@ -203,18 +200,40 @@ def matches():
 
     matched_profiles = []
     for record in match_records:
-        # Determine the ID of the other user in the match
+        # comment
         if record.user_id_1 == user_id:
             matched_user_id = record.user_id_2
         else:
             matched_user_id = record.user_id_1
 
-        # Fetch the profile of the matched user and add to the list
+        # Fcomment
         matched_profile = Profiles.query.filter_by(user_id=matched_user_id).first()
         if matched_profile:
             matched_profiles.append(matched_profile)
 
     return render_template('matches.html', matched_profiles=matched_profiles)
+
+
+@app.route('/delete_account', methods=['POST'])
+@login_required
+def delete_account():
+    # comment
+    Matches.query.filter_by(user_id_1=current_user.id).delete()
+    Matches.query.filter_by(user_id_2=current_user.id).delete()
+
+    # comment
+    Profiles.query.filter_by(user_id=current_user.id).delete()
+
+    # comment
+    User.query.filter_by(id=current_user.id).delete()
+
+    db.session.commit()
+
+    # comment
+    logout_user()
+    
+    flash('Your account has been deleted.')
+    return redirect(url_for('index'))
 
 
 @app.route('/logout')

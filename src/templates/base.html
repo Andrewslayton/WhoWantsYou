@@ -1,0 +1,44 @@
+<!-- base.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheet.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  </head>
+
+  <div class="titleContainer">
+    <span class="titleAnimated word1">Who</span>
+    <span class="titleAnimated word2">Wants</span>
+    <span class="titleAnimated word3">You</span>
+</div>
+
+
+    <div class="hotbar">
+        <a href="{{ url_for('register') }}" class="btn btn-outline-dark rounded-pill">Register</a>
+        <a href="{{ url_for('index') }}" class="btn btn-outline-dark rounded-pill">Home</a>
+        <a href="{{ url_for('matches') }}" class="btn btn-outline-dark rounded-pill">Matches</a>
+        <a href="{{ url_for('profiles') }}" class="btn btn-outline-dark rounded-pill">Profiles</a>
+        <form method="POST" action="{{ url_for('delete_account') }}" onsubmit="return confirm('Are you sure you want to delete your account?')">
+            <button type="submit" class="btn delete-account-btn">Delete Account</button>
+        </form>
+    </div>
+    <div class="arrow">
+        &#10148; 
+    </div>
+
+    <script>
+      $(".arrow").click(function() {
+        $(".hotbar").toggle();
+        let arrowChar = $(".hotbar").is(":visible") ? "&#10148;" : "&#10146;"; // Toggle between right and left arrow
+        $(".arrow").html(arrowChar);
+      });
+    </script>
+
+    {% block content %}
+    {% endblock %}
+
+  </body>
+</html>
+
+

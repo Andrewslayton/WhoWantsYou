@@ -1,5 +1,7 @@
 <!doctype html>
 <html>
+{% extends "base.html" %}
+{% block content %}
   <head>
     <title>Login</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='stylesheet.css') }}">
@@ -24,4 +26,4 @@
     <a href="/register"><button>Dont have an account? Register here!</button></a>
   </body>
 </html>
-
+{% endblock %}

@@ -38,5 +38,118 @@ a {
     text-decoration: none;
 }
 
+.delete-account-btn {
+    color: red !important;
+    border: none !important;
+    background: none !important;
+    box-shadow: none !important;
+    transition: underline 0.3s;
+}
 
+.delete-account-btn:hover {
+    text-decoration: underline;
+    background: none !important;
+}
+.hotbar {
+    display: none;
+    position: fixed;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #ADD8E6;  
+    border-radius: 30px; 
+    padding: 25px 40px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
 
+.hotbar a, .hotbar button {
+    display: block;
+    margin-bottom: 10px;
+    text-decoration: none;
+    color: black;
+    padding: 10px 15px;
+    border-radius: 50%;
+    background-color: white;
+    transition: background-color 0.3s; 
+    width: 100%; 
+    text-align: center;
+    border: none;  
+}
+
+.hotbar a:hover, .hotbar button:hover {
+    background-color: #ADD8E6;  
+    color: white;
+}
+
+.arrow {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 5em;  
+}
+
+.hotbar form {
+    border: none;
+    margin: 0;
+    padding: 0;
+    display: block;  
+}
+.titleContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.titleAnimated {
+    opacity: 0; /* Initially set all words to be transparent */
+    font-size: 4em;
+    text-align: center ;
+    padding-top: 0px;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+}
+
+.word1 {
+    animation-name: showWord1;
+}
+
+.word2 {
+    animation-name: showWord2;
+    animation-delay: 3s; /* Delay the start of this animation so it doesn't overlap with the first */
+}
+
+.word3 {
+    animation-name: showWord3;
+    animation-delay: 6s; /* Delay the start of this animation so it doesn't overlap with the first and second */
+}
+
+@keyframes showWord1 {
+    0%, 33.33% {
+        opacity: 1;
+    }
+    33.34%, 100% {
+        opacity: 0;
+    }
+}
+
+@keyframes showWord2 {
+    0%, 33.33% {
+        opacity: 0;
+    }
+    33.34%, 66.66% {
+        opacity: 1;
+    }
+    66.67%, 100% {
+        opacity: 0;
+    }
+}
+
+@keyframes showWord3 {
+    0%, 66.66% {
+        opacity: 0;
+    }
+    66.67%, 100% {
+        opacity: 1;
+    }
+}
