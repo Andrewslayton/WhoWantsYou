@@ -95,7 +95,6 @@ class LoginForm(FlaskForm):
 @app.route('/createprofile', methods=['GET', 'POST'])
 @login_required
 def index():
-
     profile_exists = Profiles.query.filter_by(user_id=current_user.id).first()
     if profile_exists:
         return redirect(url_for('profiles'))  
@@ -165,21 +164,21 @@ def profiles():
     # comment
     confirmed_matches = Matches.query.filter_by(status=True).all()
     matched_user_ids = [match.user_id_2 for match in Matches.query.filter_by(user_id_1=current_user.id).all()]
-    confirmed_partner_ids = matched_user_ids.copy()  # Initialize with matched_user_ids
-    # comment
+    confirmed_partner_ids = []
+    for match in matched_user_ids:
+        confirmed_partner_ids.append(match) 
+    #comment
     for match in confirmed_matches:
         if match.user_id_1 == current_user.id:
             confirmed_partner_ids.append(match.user_id_2)
         elif match.user_id_2 == current_user.id:
             confirmed_partner_ids.append(match.user_id_1)
-    # comment
+    #comment
     profiles = Profiles.query.filter(
         ~Profiles.user_id.in_(confirmed_partner_ids),
         Profiles.user_id != current_user.id
     ).all()
     images = {profile.id: [img.image_path for img in profile.images] for profile in profiles}
-    for image in images:
-        print(image)
     return render_template('profiles.html', profiles=profiles, images=images)
 
 
@@ -225,7 +224,8 @@ def matches():
         matched_profile = Profiles.query.filter_by(user_id=matched_user_id).first()
         if matched_profile:
             matched_profiles.append(matched_profile)
-    return render_template('matches.html', matched_profiles=matched_profiles)
+    images = {profile.id: [img.image_path for img in profile.images] for profile in matched_profiles}
+    return render_template('matches.html', matched_profiles=matched_profiles, images= images)
 
 
 @app.route('/delete_account', methods=['POST'])

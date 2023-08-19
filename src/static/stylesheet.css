@@ -167,6 +167,7 @@ a {
     border: 1px solid #ddd;
     padding: 10px;
     box-sizing: border-box;
+    cursor: pointer;
 }
 
 .image-input {
@@ -197,10 +198,17 @@ a {
     bottom: 30%;
     right: 10px;
     max-width: 40px;
-    cursor: pointer;
+    cursor: zoom-in;
     mix-blend-mode: multiply;
 }
-
+.zoom-icon-Profiles-Matches {
+    position: absolute;
+    bottom: 90%;
+    right:50%;
+    max-width: 40px;
+    cursor: zoom-in;
+    mix-blend-mode: multiply;
+}
 .center-container {
     display: relative;
     justify-content: center;

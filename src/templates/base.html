@@ -22,6 +22,7 @@
             <button type="submit" class="btn delete-account-btn">Delete Account</button>
         </form>
     </div>
+    
     <div class="arrow">
         &#10148; 
     </div>
@@ -29,7 +30,7 @@
     <script>
       $(".arrow").click(function() {
         $(".hotbar").toggle();
-        let arrowChar = $(".hotbar").is(":visible") ? "&#10148;" : "&#10146;"; // Toggle between right and left arrow
+        let arrowChar = $(".hotbar").is(":visible") ? "&#10148;" : "&#10146;"; 
         $(".arrow").html(arrowChar);
       });
     </script>
