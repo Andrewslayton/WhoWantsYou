@@ -15,8 +15,7 @@
 
 
     <div class="hotbar">
-        <a href="{{ url_for('register') }}" class="btn btn-outline-dark rounded-pill">Register</a>
-        <a href="{{ url_for('index') }}" class="btn btn-outline-dark rounded-pill">Home</a>
+        <a href="{{ url_for('logout') }}" class="btn btn-outline-dark rounded-pill">Logout</a>
         <a href="{{ url_for('matches') }}" class="btn btn-outline-dark rounded-pill">Matches</a>
         <a href="{{ url_for('profiles') }}" class="btn btn-outline-dark rounded-pill">Profiles</a>
         <form method="POST" action="{{ url_for('delete_account') }}" onsubmit="return confirm('Are you sure you want to delete your account?')">

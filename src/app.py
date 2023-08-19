@@ -159,8 +159,6 @@ def login():
                 flash("Incorrect username or password", "danger")
     return render_template('login.html', form=form)
 
-
-    matched_user_ids = [match.user_id_2 for match in Matches.query.filter_by(user_id_1=current_user.id).all()]
 @app.route('/profiles')
 @login_required
 def profiles():

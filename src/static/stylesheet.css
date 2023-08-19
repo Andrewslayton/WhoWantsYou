@@ -18,15 +18,18 @@ h1 {
 form {
     display: flex;
     flex-direction: column;
-    width: 30%;
+    width: 100%;
+    max-width: 600px;
+    margin-top: 30px;
     margin-bottom: 20px;
 }
   
-input {
+input[type="text"], input[type="password"], textarea {
     padding: 10px;
     margin-bottom: 10px;
     font-size: 1.2em;
 }
+
   
 button {
     padding: 10px;
@@ -160,7 +163,7 @@ a {
 
 .image-upload-box {
     position: relative;
-    width: 32%;  /* So there's a little space between boxes */
+    width: 32%; 
     border: 1px solid #ddd;
     padding: 10px;
     box-sizing: border-box;
@@ -180,16 +183,35 @@ a {
     font-size: 48px;
     color: #aaa;
 }
-
 .image-preview, .zoom-icon {
     display: none;
-    max-width: 100%;
+}
+.image-preview {
+    display: none;
+    max-width: 90%;
     margin-top: 10px;
 }
 
 .zoom-icon {
     position: absolute;
-    bottom: 10px;
+    bottom: 30%;
     right: 10px;
+    max-width: 40px;
     cursor: pointer;
+    mix-blend-mode: multiply;
+}
+
+.center-container {
+    display: relative;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.container {
+    max-width: 90%; 
+    width: 100%;
+}
+.submit-button {
+    display: block;
+    margin: 0 auto;
 }

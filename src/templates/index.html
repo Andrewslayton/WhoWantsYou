@@ -4,19 +4,18 @@
   <head>
     <title>My Dating Profile</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheet.css') }}">
   </head>
-
   <body>
     <h1 class="text-center mb-4">My Dating Profile</h1>
-
+    <div class="center-container">
     <div class="container">
         <form method="post" enctype="multipart/form-data">
           <label for="name">Name:</label>
           <input type="text" name="name" class="form-control"><br>
-
           <label for="bio">Bio:</label>
           <textarea name="bio" class="form-control"></textarea><br>
-
+          <label for="picture">Upload 3 pictures to be displayed on your profile</label>
           <div class="image-upload-container d-flex justify-content-between">
             {% for _ in range(3) %}
             <div class="image-upload-box">
@@ -29,12 +28,11 @@
             </div>
             {% endfor %}
           </div>
-
           <br>
-          <input type="submit" value="Submit" class="btn btn-primary">
+          <input type="submit" value="Submit" class="btn btn-primary submit-button">
         </form>
     </div>
-
+  </div>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
         $('.upload-placeholder').on('click', function() {
@@ -74,6 +72,7 @@
 
           $('body').append(overlay);
         });
+        
     </script>
   </body>
 </html>
