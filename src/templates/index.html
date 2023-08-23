@@ -1,43 +1,69 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <html>
   <head>
     <title>My Dating Profile</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheet.css') }}">
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='stylesheet.css') }}"
+    />
     <script src="static/scripts/profileInputScript.js"></script>
   </head>
   <body>
     <h1 class="text-center mb-4">My Dating Profile</h1>
-
+    {% with messages = get_flashed_messages(with_categories=true) %} 
+    {% if messages %} {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %} {% endif %} {% endwith %}
     <div class="center-container">
-    <div class="container">
+      <div class="container">
         <form method="post" enctype="multipart/form-data">
           <label for="name">Name:</label>
-          <input type="text" name="name" class="form-control"><br>
+          <input type="text" name="name" class="form-control" /><br />
           <label for="bio">Bio:</label>
-          <textarea name="bio" class="form-control"></textarea><br>
-          <label for="picture">Upload 3 pictures to be displayed on your profile</label>
+          <textarea name="bio" class="form-control"></textarea><br />
+          <label for="picture"
+            >Upload 3 pictures to be displayed on your profile</label
+          >
           <div class="image-upload-container d-flex justify-content-between">
             {% for _ in range(3) %}
             <div class="image-upload-box">
-              <input type="file" name="picture" class="image-input" id="image-input-{{ loop.index }}">
-                <div class="upload-placeholder d-flex justify-content-center align-items-center" data-input="image-input-{{ loop.index }}">
-                    <span class="plus-sign">+</span>
-                </div>
-                <img src="" class="image-preview" alt="Image Preview">
-                <img src="static/microscope/microscop.jfif" class="zoom-icon" alt="Zoom Icon" title="Click to view in fullscreen">
+              <input
+                type="file"
+                name="picture"
+                class="image-input"
+                id="image-input-{{ loop.index }}"
+              />
+              <div
+                class="upload-placeholder d-flex justify-content-center align-items-center"
+                data-input="image-input-{{ loop.index }}"
+              >
+                <span class="plus-sign">+</span>
+              </div>
+              <img src="" class="image-preview" alt="Image Preview" />
+              <img
+                src="static/microscope/microscop.jfif"
+                class="zoom-icon"
+                alt="Zoom Icon"
+                title="Click to view in fullscreen"
+              />
             </div>
 
             {% endfor %}
           </div>
-          <br>
-          <input type="submit" value="Submit" class="btn btn-primary submit-button">
+          <br />
+          <input
+            type="submit"
+            value="Submit"
+            class="btn btn-primary submit-button"
+          />
         </form>
+      </div>
     </div>
-  </div>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   </body>
 </html>
 {% endblock %}
-

@@ -1,10 +1,12 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-{% extends "base.html" %}
-{% block content %}
+  {% extends "base.html" %} {% block content %}
   <head>
     <title>Profiles</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
     <style>
       .card {
         margin-bottom: 20px;
@@ -16,7 +18,7 @@
       }
       .carousel-control-prev-icon,
       .carousel-control-next-icon {
-        background-color: black; 
+        background-color: black;
       }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -26,47 +28,93 @@
       <h1 class="mb-4">Profiles</h1>
       <div class="row">
         {% for profile in profiles %}
-          <div class="col-lg-4 col-md-6 mb-4 profile-card" id="profile-{{profile.id}}">
-            <div class="card">
-              <div id="carousel{{profile.id}}" class="carousel slide" data-ride="carousel">
-                <div class="carousel-inner">
-                  {% for pic in images[profile.id] %}
-                  <div class="carousel-item {% if loop.first %} active {% endif %}">
-                    <img src="{{ pic }}" class="profile-image d-block w-100" alt="{{ profile.name }}">
-                    <img src="static/microscope/microscop.jfif" class="zoom-icon-Profiles-Matches" alt="Zoom Icon" title="Click to view in fullscreen" onclick="openFullscreen(this.previousElementSibling)">
-                  </div>
-                  {% endfor %}
+        <div
+          class="col-lg-4 col-md-6 mb-4 profile-card"
+          id="profile-{{profile.id}}"
+        >
+          <div class="card">
+            {% with messages = get_flashed_messages(with_categories=true) %} {%
+            if messages %} {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %} {% endif %} {% endwith %}
+            <div
+              id="carousel{{profile.id}}"
+              class="carousel slide"
+              data-ride="carousel"
+            >
+              <div class="carousel-inner">
+                {% for pic in images[profile.id] %}
+                <div
+                  class="carousel-item {% if loop.first %} active {% endif %}"
+                >
+                  <img
+                    src="{{ pic }}"
+                    class="profile-image d-block w-100"
+                    alt="{{ profile.name }}"
+                  />
+                  <img
+                    src="static/microscope/microscop.jfif"
+                    class="zoom-icon-Profiles-Matches"
+                    alt="Zoom Icon"
+                    title="Click to view in fullscreen"
+                    onclick="openFullscreen(this.previousElementSibling)"
+                  />
                 </div>
-                <a class="carousel-control-prev" href="#carousel{{profile.id}}" role="button" data-slide="prev">
-                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                  <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" href="#carousel{{profile.id}}" role="button" data-slide="next">
-                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                  <span class="sr-only">Next</span>
-                </a>
+                {% endfor %}
               </div>
+              <a
+                class="carousel-control-prev"
+                href="#carousel{{profile.id}}"
+                role="button"
+                data-slide="prev"
+              >
+                <span
+                  class="carousel-control-prev-icon"
+                  aria-hidden="true"
+                ></span>
+                <span class="sr-only">Previous</span>
+              </a>
+              <a
+                class="carousel-control-next"
+                href="#carousel{{profile.id}}"
+                role="button"
+                data-slide="next"
+              >
+                <span
+                  class="carousel-control-next-icon"
+                  aria-hidden="true"
+                ></span>
+                <span class="sr-only">Next</span>
+              </a>
+            </div>
 
-              <div class="card-body">
-                <h5 class="card-title">{{ profile.name }}</h5>
-                <p class="card-text">{{ profile.bio }}</p>
-                <form method="POST" action="/match/{{profile.id}}" class="match-form">
-                  <button type="submit" class="btn btn-primary">Match</button>
-                </form>              
-              </div>
+            <div class="card-body">
+              <h5 class="card-title">{{ profile.name }}</h5>
+              <p class="card-text">{{ profile.bio }}</p>
+              <form
+                method="POST"
+                action="/match/{{profile.id}}"
+                class="match-form"
+              >
+                <button type="submit" class="btn btn-primary">Match</button>
+              </form>
             </div>
           </div>
+        </div>
         {% endfor %}
       </div>
     </div>
-</body>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
     <script src="static/scripts/profileScripts.js"></script>
   </body>
 </html>
 {% endblock %}
-
-
-
-

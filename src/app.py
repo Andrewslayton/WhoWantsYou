@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, redirect, url_for, flash
 from werkzeug.utils import secure_filename
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import check_password_hash
 import os
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
@@ -14,7 +14,7 @@ from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 from datetime import datetime
-from sqlalchemy import and_, or_
+from sqlalchemy import and_
 
 app = Flask(__name__)
 
@@ -57,6 +57,7 @@ class Profiles(db.Model):
     bio = db.Column(db.String(500))
     images = db.relationship('ProfileImages', backref='profile', lazy=True)
 
+
 class ProfileImages(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id'), nullable=False)
@@ -83,6 +84,7 @@ class RegisterForm(FlaskForm):
         if existing_user_username:
             raise ValidationError(
                 'That username already exists.')
+        
 class LoginForm(FlaskForm):
     username = StringField(validators=[
                            InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
@@ -91,6 +93,7 @@ class LoginForm(FlaskForm):
                              InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
 
     submit = SubmitField('Login')
+
 
 @app.route('/createprofile', methods=['GET', 'POST'])
 @login_required
@@ -101,33 +104,36 @@ def index():
     if request.method == 'POST':
         name = request.form['name']
         bio = request.form['bio']
-        files = request.files.getlist('picture')  
-        try:
-            profile = Profiles(user_id=current_user.id, name=name, bio=bio)
-            db.session.add(profile)
-            db.session.commit()
-        except Exception as e:
-            db.session.rollback()
-            return render_template('index.html', error="Error creating profile. Please try again.")           
-        try:
-            for file in files:
-                if file:
-                    filename = secure_filename(file.filename)
-                    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                    file.save(file_path)
-                        
-                    image = ProfileImages(profile_id=profile.id, image_path=file_path)
-                    db.session.add(image)
-            db.session.commit()
-        except Exception as e:
-            db.session.rollback()
-            return render_template('index.html', error="Error uploading images. Please try again.")
+        files  = request.files.getlist('picture') 
+        #check if the post request has a file uploaded for the picture field.
+        valid_files = [file for file in files if file.filename != '']
+        if not valid_files:
+            flash("Please upload an image. This is a dating site after all", "danger")
+            return redirect(url_for('index'))
+        else:
+            try:
+                profile = Profiles(user_id=current_user.id, name=name, bio=bio)
+                db.session.add(profile)
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                return render_template('index.html', error="Error creating profile. Please try again.")           
+            try:
+                for file in files:
+                    if file:
+                        filename = secure_filename(file.filename)
+                        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                        file.save(file_path)
+                            
+                        image = ProfileImages(profile_id=profile.id, image_path=file_path)
+                        db.session.add(image)
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                return render_template('index.html', error="Error uploading images. Please try again.")
+        
         return redirect(url_for('profiles'))
     return render_template('index.html')
-
-
-
-
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -157,6 +163,7 @@ def login():
             if form.is_submitted():
                 flash("Incorrect username or password", "danger")
     return render_template('login.html', form=form)
+
 
 @app.route('/profiles')
 @login_required
@@ -251,6 +258,7 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+
 @app.cli.command("initdb")
 def initdb_command():
     """Creates the database tables."""
@@ -262,3 +270,5 @@ if __name__ == '__main__':
     with app.app_context():
         db
     app.run(debug=True)
+
+

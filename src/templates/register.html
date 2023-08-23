@@ -1,28 +1,24 @@
 <!doctype html>
 <html>
-{% extends "base.html" %}
-{% block content %}
+  {% extends "base.html" %} {% block content %}
   <head>
     <title>Register</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='stylesheet.css') }}">
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='stylesheet.css') }}"
+    />
   </head>
   <body>
     <h1>Register for WHO WANTS YOU</h1>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-            <div class="alert alert-{{ category }}">
-                {{ message }}
-            </div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %} {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %} {% endif %} {% endwith %}
     <form method="POST" action="">
-      {{ form.hidden_tag() }}
-      {{ form.username }}
-      {{ form.password }}
-      {{ form.submit }}
-    </form> 
+      {{ form.hidden_tag() }} {{ form.username }} {{ form.password }} {{
+      form.submit }}
+    </form>
     <a href="/"><button>Already have an account? Login here!</button></a>
   </body>
 </html>
