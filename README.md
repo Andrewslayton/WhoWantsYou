@@ -4,3 +4,4 @@ Store information that a user inputs and transports that data to the main page o
 A "liking" system where users can upvote other users profiles.
 Users can edit their profile.
 Potentially a direct messaging system.
+worked on by Semir K, Ardi V
